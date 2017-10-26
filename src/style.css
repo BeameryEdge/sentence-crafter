@@ -1,0 +1,22 @@
+.sentence-crafter-input {
+    background: inherit;
+    color: inherit;
+    display: inline-block;
+    border: inherit;
+    margin: 0 3px;
+    -webkit-appearance: inherit;
+    -webkit-border-radius: inherit;
+    border-radius: inherit;
+    font: inherit;
+}
+
+.sentence-crafter-input-hidden {
+    position: absolute;
+    visibility: hidden;
+}
+
+@keyframes sentence-crafter-blinker {
+    0% { opacity: 0.4; }
+    50% { opacity: 0.6; }
+    100% { opacity: 0.4; }
+}
