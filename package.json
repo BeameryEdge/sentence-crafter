@@ -1,6 +1,6 @@
 {
   "name": "sentence-crafter",
-  "library": "SentenceAutoComplete",
+  "library": "SentenceCrafter",
   "version": "1.0.0",
   "scripts": {
     "build": "webpack --config webpack.config.babel.js",
