@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Sentence, Selector, Option } from '../src/index'
+import { Sentence, Option, SelectConfig, SelectionsObject } from '../src/index'
 
-const wordToOption = (x:string) => ({ id:x, value:x })
+const wordToOption = (x:string) => ({ id:x, value:x }) as Option
 
 interface Noun extends Option {
     type: 's'|'p'
@@ -41,7 +41,7 @@ const nouns = [
     }]),
     p: p.concat([{
         id: ns,
-        type: 's' as 's',
+        type: 'p' as 'p',
         value: np
     }]),
     b: b.concat([{
@@ -50,7 +50,7 @@ const nouns = [
         value: ns
     }, {
         id: np,
-        type: 's' as 's',
+        type: 'p' as 'p',
         value: np
     }])
 }), {
@@ -62,8 +62,9 @@ const nouns = [
 const startsWithVowel = (x: Noun) => 'aeiou'.indexOf(x.value[0]) >= 0
 const startsWithConsonant = (x: Noun) => 'aeiou'.indexOf(x.value[0]) === -1
 
+interface Determiner extends Option { type: 's'|'p'|'b' }
 const determiners = [
-    { id: 'the', type: 's' },
+    { id: 'the', type: 'b' },
     { id: 'a', type: 's' },
     { id: 'an', type: 's' },
     { id: 'this', type: 's' },
@@ -82,43 +83,46 @@ const determiners = [
     id,
     type,
     value: id,
-}))
-
-const getNounsFromDeterminer = (det: { id: string, type: string}) =>{
-    if (!det) {
-        return []
-    } else {
-        const { id, type } = det
-        return id === 'a' ? nouns[type].filter(startsWithConsonant) :
-            id === 'an' ? nouns[type].filter(startsWithVowel) :
-            nouns[type]
-    }
-}
+})) as Determiner[]
 
 const prepositions = [
     'of', 'in', 'to', 'for', 'with', 'on', 'at', 'from', 'by', 'about',
     'as', 'into', 'like', 'through', 'after', 'over', 'between', 'out',
     'against', 'during', 'without', 'before', 'under', 'around', 'among'
-].map(value => ({id:value || 'continue', value}))
+].map(value => ({id:value || 'continue', value}) as Option)
 
 const adjectives = [
     'good', 'new', 'first', 'last', 'long', 'great', 'little', 'own', 'other',
     'old', 'right', 'big', 'high', 'different', 'small', 'large', 'next',
     'early', 'young', 'important', 'few', 'public', 'bad', 'same', 'able'
-].map(value => ({id:value || 'continue', value}))
+].map(value => ({id:value || 'continue', value}) as Option)
 
-const NounPhrase: React.StatelessComponent<{
-    id: string,
-    children?: (type: Noun["type"]) => React.ReactNode
-}> = ({id, children}) => (
-    <Selector ids={[id+'.DET', id+'.ADJ', id+'.N', id+'.PP.P']} options={determiners} optionGetters={[
-        det=>det && adjectives, getNounsFromDeterminer, (det, adj, noun)=> console.log('prep check', det, adj, noun) || noun && prepositions
-    ]}>{(d, a, n: Noun, p: Option) =>
-        n && (
-            p ? <NounPhrase id={id+'.PP'}>{children}</NounPhrase> :children && children(n.type)
-        )
-    }</Selector>
-)
+interface NounPhraseSelections extends SelectionsObject {
+    det: Determiner
+    adj: Option[]
+    noun: Noun
+    prep: Option
+}
+const nounPhraseConfig: SelectConfig<NounPhraseSelections>[] = [
+    { id: 'det', required:true, getOptions:() => determiners },
+    { id: 'adj', list: true, getOptions: (x) => console.log('adj', x) ||x.noun && adjectives, },
+    { id: 'noun', required: true, getOptions:({ det }: { det: Determiner }) =>
+        det && (
+            det.id === 'a' ? nouns[det.type].filter(startsWithConsonant) :
+            det.id === 'an' ? nouns[det.type].filter(startsWithVowel) :
+            nouns[det.type]
+        ) },
+    { id: 'PP', getConfigs: ({ noun }) => noun && prepositionPhraseConfig },
+]
+interface PrepositionPhraseSelections extends NounPhraseSelections {
+    prep: Option
+}
+const prepositionPhraseConfig: SelectConfig<PrepositionPhraseSelections>[] = [
+    { id: 'prep', getOptions:() => prepositions },
+    { id: 'det', required:true, getOptions:({ prep }) => prep && determiners },
+    ...nounPhraseConfig.slice(1)
+]
+
 
 const verbs = [
     { present: 'being', future: 'be', past: 'been' },
@@ -179,44 +183,48 @@ const tenses = {
     ],
 }
 
-const getVerbsFromTense = (tense: Option) => tense && verbs[tense.id]
+interface VerbPhraseSelections extends NounPhraseSelections {
+    tense: Option,
+    verb: Option,
+}
+const verbPhraseConfig = (type: Noun["type"]) => [
+    { id: 'tense', required: true, getOptions:() => tenses[type] },
+    { id: 'verb', required: true, getOptions:({ tense }: { tense: Option }) => tense && verbs[tense.id]},
+    { id: 'det', required: true, getOptions:({ verb }) => verb && determiners },
+    ...nounPhraseConfig.slice(1)
+] as SelectConfig<VerbPhraseSelections>[]
 
-const VerbPhrase: React.StatelessComponent<{ id:string, type: Noun["type"] }> = ({id, type, children}) =>
-<Selector
-ids={[id+'.T', id+'.V']}
-options={tenses[type]}
-optionGetters={[
-    getVerbsFromTense
-]}>{(tense: { id: string }, verb) =>
-    tense && verb && <NounPhrase id={id+'.NP'}>{() => children}</NounPhrase>
-}</Selector>
-
-const Poem: React.StatelessComponent<{ id:string, idx: number }> =({id, idx, children}) =>
-    <NounPhrase id={`${id}.${idx}.NP`}>{type =>
-        <VerbPhrase id={`${id}.${idx}.VP`} type={type}>
-            <br />
-            <Poem id={id} idx={idx+1}>
-                {children}
-            </Poem>
-        </VerbPhrase>
-    }</NounPhrase>
-
+interface PoemSelection extends SelectionsObject {
+    line: {
+        NP: NounPhraseSelections,
+        VP: VerbPhraseSelections
+    }
+}
 class Example extends React.Component {
     render() {
         return (
             <form style={{
                 textAlign: 'center'
             }}>
-                <Sentence choices={choices}>
-                    <h1>
-                        <NounPhrase id='title' />
-                    </h1>
-                    <p>
-                        <Poem id='poem' idx={0}/>
-                        <br />
-                        <input type="submit" value="Save"/>
-                    </p>
-                </Sentence>
+                <h1>
+                    <Sentence id='title' choices={choices} config={nounPhraseConfig}/>
+                </h1>
+                <p>
+                    <Sentence id='poem' choices={choices} config={[{
+                        id: 'line',
+                        list: true,
+                        listContinuationCondition: ({ NP }: PoemSelection["line"]) =>
+                            NP && !!NP.noun,
+                        getConfigs: () => [
+                            { id: 'NP', getConfigs: () => nounPhraseConfig },
+                            { id: 'VP', getConfigs: ({ NP }: PoemSelection["line"]) =>
+                                NP && NP.noun && verbPhraseConfig(NP.noun.type) },
+                            (_, id) => <br key={id+'.br'}/>
+                        ]
+                    }]}/>
+                    <br />
+                    <input type="submit" value="Save"/>
+                </p>
                 <footer style={{
                     width: '100%',
                     height: '33%',
@@ -224,7 +232,7 @@ class Example extends React.Component {
                     position: 'fixed',
                     bottom: 0,
                 }}>
-                    Make a poem with only the most common words
+                    Make a poem with only the most common words in the english language
                 </footer>
             </form>
         )

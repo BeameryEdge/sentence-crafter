@@ -1,2 +1,3 @@
 # sentence-crafter
-Components for building sentence autocomplete for natural language configuration building
+
+Sentence Crafter is a versatile, feature rich component for building complex forms in a natural language style
