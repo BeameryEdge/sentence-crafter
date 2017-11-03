@@ -1,1 +1,726 @@
-!function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t(require("React"),require("PropTypes")):"function"==typeof define&&define.amd?define(["React","PropTypes"],t):"object"==typeof exports?exports.SentenceCrafter=t(require("React"),require("PropTypes")):e.SentenceCrafter=t(e.React,e.PropTypes)}(this,function(e,t){return webpackJsonpSentenceCrafter([0,1],[function(t,n){t.exports=e},function(e,t,n){"use strict";function r(e){if(Array.isArray(e)){for(var t=0,n=Array(e.length);t<e.length;t++)n[t]=e[t];return n}return Array.from(e)}function i(e,t,n){return t in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}function o(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function u(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function c(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{value:!0}),n.d(t,"phraseContextTypes",function(){return y}),n.d(t,"Input",function(){return v}),n.d(t,"Word",function(){return b}),n.d(t,"Sentence",function(){return m}),n.d(t,"List",function(){return O}),n.d(t,"Phrase",function(){return _});var s=n(0),a=(n.n(s),n(3)),l=n.n(a),p=n(2),d=(n.n(p),function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}()),f={verticalAlign:"super",fontSize:"smaller",margin:"0 -0.05em 0 0.05em",animation:"sentence-crafter-blinker 1s ease-in-out infinite"},h=function(e){var t=void 0,n=void 0,r=void 0,i=e.onValueChange||function(e){return e},o=e.options||[],u=function(){t&&n&&r&&t.options[t.selectedIndex]&&(r.innerText=t.options[t.selectedIndex].text,t.style.width=n.getBoundingClientRect().width+"px")};return s.createElement("span",null,s.createElement("select",{className:"sentence-crafter-input sentence-crafter-select sentence-crafter-input-hidden",ref:function(e){n=e,u()}},s.createElement("option",{ref:function(e){r=e,u()}})),s.createElement("select",{className:"sentence-crafter-input sentence-crafter-select",id:e.id,value:e.value||"",style:e.value?{}:f,name:e.name,ref:function(e){t=e,e&&i(e.value),u()},onChange:function(e){i(e.target.value)}},e.required||s.createElement("option",{className:"sentence-crafter-option",value:""},e.placeholder||"▾"),o.map(function(e){var t=e.id,n=e.value;return s.createElement("option",{className:"sentence-crafter-option",key:t,value:t},n)})))},y={parentId:l.a.string.isRequired,selectOption:l.a.func.isRequired,setSelection:l.a.func.isRequired,selections:l.a.PropTypes.oneOfType([l.a.object,l.a.array]),choices:l.a.object.isRequired},v=function(e){function t(){return o(this,t),u(this,(t.__proto__||Object.getPrototypeOf(t)).apply(this,arguments))}return c(t,e),d(t,[{key:"getKey",value:function(){var e=this.context.parentId,t=this.props.id;return"string"==typeof t?e+"."+t:e+"["+t+"]"}},{key:"value",set:function(e){var t=this.props.id,n=this.context,r=(n.selectOption,n.setSelection,this.context.choices[this.getKey()]);e=!this.context.selections.hasOwnProperty(t)&&r?r:e;var i={id:e};this.context.selectOption(this.props.id,i)&&this.context.setSelection(this.props.id,function(){return i})},get:function(){return console.log(this.context.selections),this.context.selections[this.props.id]&&this.context.selections[this.props.id].id}}]),t}(s.Component);v.contextTypes=y;var b=function(e){function t(){o(this,t);var e=u(this,(t.__proto__||Object.getPrototypeOf(t)).apply(this,arguments));return e.onValueChange=function(t,n){var r=e.props.id,i=e.context,o=i.selectOption,u=i.setSelection,c=e.context.choices[e.getKey()],s=!e.context.selections.hasOwnProperty(r)&&c&&t.find(function(e){return e.id===c}),a=s||t.find(function(e){return e.id===n});o(r,a)&&u(r,function(){return a})},e}return c(t,e),d(t,[{key:"getOptions",value:function(){return this.props.getOptions(this.context.selections)}},{key:"getKey",value:function(){var e=this.context.parentId,t=this.props.id;return"string"==typeof t?e+"."+t:e+"["+t+"]"}},{key:"render",value:function(){var e=this,t=this.props,n=t.placeholder,r=t.required,i=this.getOptions();if(i){var o=this.getKey();return s.createElement(h,{required:r,key:o,name:o,id:o,placeholder:n,onValueChange:function(t){return e.onValueChange(i,t)},value:this.value,options:i})}return null}},{key:"value",get:function(){return this.context.selections[this.props.id]&&this.context.selections[this.props.id].id}}]),t}(s.Component);b.contextTypes=y;var g=function(e){function t(){return o(this,t),u(this,(t.__proto__||Object.getPrototypeOf(t)).apply(this,arguments))}return c(t,e),d(t,[{key:"getChildContext",value:function(){var e=this,t=this;return{get parentId(){var e=t.context.parentId,n=t.props.id;return"string"==typeof n?e+"."+n:e+"["+n+"]"},setSelection:function(t,n){e.context.setSelection(e.props.id,function(r){return e.updateSelections(t,n,r)})},selectOption:function(t,n){e.props.id;return e.context.selectOption(e.props.id+"."+t,n)},get selections(){return t.context.selections[t.props.id]},get choices(){return t.context.choices}}}},{key:"componentWillMount",value:function(){var e=this;this.context.setSelection(this.props.id,function(){return e.getInitialSelections()})}}]),t}(s.Component);g.contextTypes=y,g.childContextTypes=y;var m=function(e){function t(e){o(this,t);var n=u(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e));return n.state={choices:{},selections:{}},n}return c(t,e),d(t,[{key:"getChildContext",value:function(){var e=this;return{parentId:this.props.id,setSelection:function(t,n){e.setState(function(e){var r=e.selections;return{selections:Object.assign({},r,i({},t,n(r[t])))}})},selectOption:function(t,n){var r=e.props.id+"."+t;return e.state.choices[r]!==(n&&n.id)&&(e.setState(function(e){var t=e.choices;if(t[r]!==(n&&n.id))return{choices:Object.assign({},t,i({},r,n&&n.id))}}),!0)},selections:this.state.selections,choices:this.props.choices}}},{key:"render",value:function(){return s.createElement("span",{className:"sentence-crafter"},this.props.children)}}]),t}(s.Component);m.childContextTypes=g.contextTypes;var O=function(e){function t(){return o(this,t),u(this,(t.__proto__||Object.getPrototypeOf(t)).apply(this,arguments))}return c(t,e),d(t,[{key:"getInitialSelections",value:function(){return[]}},{key:"updateSelections",value:function(e,t,n){return[].concat(r(n.slice(0,e)),[t(n[e])],r(n.slice(e+1)))}},{key:"render",value:function(){var e=this.context.selections[this.props.id];if(Array.isArray(e)){for(var t=[],n=0,r=!0;r;n++){var i=this.props.children(this.context.selections,n);if(!i)break;t.push(i),r=!!e[n]}return s.createElement("span",null,t)}return null}}]),t}(g),_=function(e){function t(){return o(this,t),u(this,(t.__proto__||Object.getPrototypeOf(t)).apply(this,arguments))}return c(t,e),d(t,[{key:"getInitialSelections",value:function(){return{}}},{key:"updateSelections",value:function(e,t,n){return Object.assign({},n,i({},e,t(n[e])))}},{key:"render",value:function(){return this.context.selections[this.props.id]?s.createElement("span",null,this.props.children(this.context.selections)):null}}]),t}(g)},function(e,t,n){var r=n(4);"string"==typeof r&&(r=[[e.i,r,""]]);n(6)(r,{});r.locals&&(e.exports=r.locals)},function(e,n){e.exports=t},function(e,t,n){t=e.exports=n(5)(void 0),t.push([e.i,".sentence-crafter-input{background:inherit;color:inherit;display:inline-block;border:inherit;margin:0 .1em;-webkit-appearance:inherit;-webkit-border-radius:inherit;border-radius:inherit;font:inherit}.sentence-crafter-input-hidden{position:absolute;visibility:hidden}@keyframes sentence-crafter-blinker{0%{opacity:.4}50%{opacity:.6}to{opacity:.4}}",""])},,,function(e,t,n){"use strict";function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function o(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{value:!0}),n.d(t,"Field",function(){return p}),n.d(t,"DateField",function(){return d}),n.d(t,"BooleanField",function(){return f}),n.d(t,"MultiChoiceField",function(){return h}),n.d(t,"NestedField",function(){return y}),n.d(t,"Table",function(){return g});var u=n(0),c=(n.n(u),n(1)),s=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),a=function(e){function t(){r(this,t);var e=i(this,(t.__proto__||Object.getPrototypeOf(t)).apply(this,arguments));return e.resize=function(t){if(t&&e.hiddenSpan&&"date"!==e.props.type){e.hiddenSpan.innerText=t.value?t.value+".":t.placeholder;var n=e.hiddenSpan.getBoundingClientRect(),r=n.width;n.height;t.style.width=r+"px"}},e}return o(t,e),s(t,[{key:"render",value:function(){var e=this,t=this.getKey();return u.createElement("span",null,u.createElement("span",{ref:function(t){return e.hiddenSpan=t},style:{minWidth:"20px",position:"absolute",visibility:"hidden"}}),u.createElement("input",{className:"sentence-crafter-input",placeholder:"<blank>",type:this.props.type,key:t,name:t,id:t,ref:function(t){return e.resize(t)},onChange:function(t){return e.resize(t.target)},value:this.value}))}}]),t}(c.Input),l=function(e){function t(){return r(this,t),i(this,(t.__proto__||Object.getPrototypeOf(t)).apply(this,arguments))}return o(t,e),s(t,[{key:"onValueChange",value:function(e){e&&(this.value=e.value)}},{key:"render",value:function(){var e=this,t=this.getKey();return u.createElement("input",{className:"sentence-crafter-input",placeholder:"<blank>",type:"date",key:t,name:t,id:t,ref:function(t){return e.onValueChange(t)},onChange:function(t){return e.onValueChange(t.target)},value:this.value})}}]),t}(c.Input),p=function(){function e(t,n){r(this,e),this.id=t,this.value=n,this.conditions=[{id:"eq",value:"is"},{id:"neq",value:"is not"}]}return s(e,[{key:"Query",value:function(){return u.createElement(a,{key:"value",id:"value"})}}]),e}(),d=function(e){function t(){r(this,t);var e=i(this,(t.__proto__||Object.getPrototypeOf(t)).apply(this,arguments));return e.conditions=[{id:"gt",value:"after"},{id:"lt",value:"before"}],e}return o(t,e),s(t,[{key:"Query",value:function(){return u.createElement(l,{key:"value",id:"value"})}}]),t}(p),f=function(e){function t(){return r(this,t),i(this,(t.__proto__||Object.getPrototypeOf(t)).apply(this,arguments))}return o(t,e),t}(p),h=function(e){function t(e,n,o){r(this,t);var u=i(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e,n));return u.options=o,u}return o(t,e),s(t,[{key:"Query",value:function(){var e=this;return u.createElement(c.Word,{id:"value",placeholder:"(blank)",getOptions:function(){return e.options}})}}]),t}(p),y=function(e){function t(e,n,o){r(this,t);var u=i(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e,n));return u.subFields=o,u}return o(t,e),t}(p),v=function(e){var t=e.table;return u.createElement(c.List,{id:"query"},function(e,n){var r=(e.doQuery,e.query);return(0===n||r[n-1]&&r[n-1].cont)&&u.createElement(c.Phrase,{key:n,id:n},function(e){return u.createElement("span",null,u.createElement(c.Word,{id:"fieldId",required:!0,getOptions:function(){return e?t.fields.filter(function(t){var r=t.id;return!e.slice(0,n).find(function(e){var t=e.fieldId;return t&&t.id===r})}):t.fields}}),u.createElement(c.Word,{id:"subFieldId",required:!0,getOptions:function(e){var t=e.fieldId;return t instanceof y&&t.subFields}}),u.createElement(c.Word,{id:"op",required:!0,getOptions:function(e){var t=e.fieldId;return t&&t.conditions}}),e[n].fieldId&&e[n].fieldId.Query(),u.createElement(c.Word,{id:"cont",placeholder:"(+and)",getOptions:function(n){return n.op&&e.length<t.fields.length-1&&[{id:"and",value:", and"}]}}))})})},b=function(){return u.createElement(c.List,{id:"alternatives"},function(e,t){var n=e.table,r=e.doQuery,i=e.alternatives;return n&&r&&(0===t||i[t-1]&&i[t-1].cont)&&u.createElement(c.Phrase,{key:t,id:t},function(){return u.createElement("span",null,u.createElement(v,{table:n}),u.createElement(c.Word,{id:"cont",placeholder:"(+or)",getOptions:function(e){var t=e.query;return t&&t.length&&t[t.length-1].fieldId&&[{id:"or",value:"; or"}]}}))})})},g=function e(t,n,i){r(this,e),this.id=t,this.value=n,this.fields=i},m=function(e){var t=e.fieldId,n=e.subFieldId;return t&&(t instanceof y?n:t)},O=[{id:"year",value:"Year"},{id:"month",value:"Month"},{id:"day",value:"Day"},{id:"hour",value:"Hour"},{id:"minutes",value:"Minute"},{id:"seconds",value:"Second"},{id:"milliseconds",value:"Millisecond"}],_=function(e){var t=e.charts,n=e.choices;return u.createElement(c.Sentence,{id:"report",choices:n},u.createElement(c.Word,{id:"chart",required:!0,getOptions:function(){return t}}),u.createElement(c.Word,{id:"table",placeholder:"table",required:!0,getOptions:function(e){var t=e.chart;return t&&t.tables}}),u.createElement(c.Word,{id:"doQuery",placeholder:"(+filter)",getOptions:function(e){return e.table&&[{id:"where",value:"where"}]}}),u.createElement(b,null),u.createElement("span",{key:"grouped by"},"grouped by"),u.createElement(c.Phrase,{id:"group"},function(e){var t=e.table;return t&&u.createElement("span",null,u.createElement(c.Word,{id:"dateInterval",required:!0,getOptions:function(e){var t=e.fieldId,n=e.subFieldId;return m({fieldId:t,subFieldId:n})instanceof d&&O}}),u.createElement(c.Word,{id:"fieldId",required:!0,getOptions:function(){return t.fields}}),u.createElement(c.Word,{id:"subFieldId",required:!0,getOptions:function(e){var t=e.fieldId;return t instanceof y&&t.subFields}}))}),u.createElement(c.Word,{id:"doSplit",placeholder:"(+split)",getOptions:function(e){var t=e.table;return e.group&&t&&[{id:"split by",value:"split by"}]}}),u.createElement(c.Phrase,{id:"split"},function(e){var t=e.table,n=e.group,r=e.doSplit;return t&&r&&n&&u.createElement("span",null,u.createElement(c.Word,{id:"fieldId",required:!0,getOptions:function(){return t.fields.filter(function(e){return e.id!==n.fieldId.id&&!(e instanceof d)})}}),u.createElement(c.Word,{id:"subFieldId",required:!0,getOptions:function(e){var t=e.fieldId;return t instanceof y&&t.subFields}}))}))};t.default=_}],[7])});
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory(require("React"), require("PropTypes"));
+	else if(typeof define === 'function' && define.amd)
+		define(["React", "PropTypes"], factory);
+	else if(typeof exports === 'object')
+		exports["SentenceCrafter"] = factory(require("React"), require("PropTypes"));
+	else
+		root["SentenceCrafter"] = factory(root["React"], root["PropTypes"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_3__) {
+return webpackJsonpSentenceCrafter([0,1],[
+/* 0 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "phraseContextTypes", function() { return phraseContextTypes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Input", function() { return Input; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Word", function() { return Word; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Sentence", function() { return Sentence; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "List", function() { return List; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Phrase", function() { return Phrase; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__style_css__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__style_css__);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+var blinkerStyle = {
+    verticalAlign: 'super',
+    fontSize: 'smaller',
+    margin: '0 -0.05em 0 0.05em',
+    animation: 'sentence-crafter-blinker 1s ease-in-out infinite'
+};
+var SelectComponent = function SelectComponent(props) {
+    var select = void 0;
+    var hiddenSelect = void 0;
+    var hiddenOption = void 0;
+    var onValueChange = props.onValueChange || function ($) {
+        return $;
+    };
+    var options = props.options || [];
+    var resize = function resize() {
+        if (!select || !hiddenSelect || !hiddenOption || !select.options[select.selectedIndex]) return;
+        hiddenOption.innerText = select.options[select.selectedIndex].text;
+        select.style.width = hiddenSelect.getBoundingClientRect().width + 'px';
+    };
+    return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("select", { className: 'sentence-crafter-input sentence-crafter-select sentence-crafter-input-hidden', ref: function ref($) {
+            hiddenSelect = $;resize();
+        } }, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("option", { ref: function ref($) {
+            hiddenOption = $;resize();
+        } })), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("select", { className: 'sentence-crafter-input sentence-crafter-select', id: props.id, value: props.value || '', style: props.value ? {} : blinkerStyle, name: props.name, ref: function ref($) {
+            select = $;$ && onValueChange($.value);resize();
+        }, onChange: function onChange(e) {
+            onValueChange(e.target.value);
+        } }, props.required || __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("option", { className: 'sentence-crafter-option', value: '' }, props.placeholder || '▾'), options.map(function (_ref) {
+        var id = _ref.id,
+            value = _ref.value;
+        return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("option", { className: 'sentence-crafter-option', key: id, value: id }, value);
+    })));
+};
+var phraseContextTypes = {
+    parentId: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string.isRequired,
+    selectOption: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func.isRequired,
+    setSelection: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func.isRequired,
+    selections: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.PropTypes.oneOfType([__WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object, __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.array]),
+    choices: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.object.isRequired
+};
+var Input = function (_React$Component) {
+    _inherits(Input, _React$Component);
+
+    function Input() {
+        _classCallCheck(this, Input);
+
+        return _possibleConstructorReturn(this, (Input.__proto__ || Object.getPrototypeOf(Input)).apply(this, arguments));
+    }
+
+    _createClass(Input, [{
+        key: 'getKey',
+        value: function getKey() {
+            var parentId = this.context.parentId;
+            var id = this.props.id;
+
+            return typeof id === 'string' ? parentId + '.' + id : parentId + '[' + id + ']';
+        }
+    }, {
+        key: 'value',
+        set: function set(value) {
+            var id = this.props.id;
+            var _context = this.context,
+                selectOption = _context.selectOption,
+                setSelection = _context.setSelection;
+
+            var preSelectedChoice = this.context.choices[this.getKey()];
+            var weMadeSelection = this.context.selections.hasOwnProperty(id);
+            value = !weMadeSelection && preSelectedChoice ? preSelectedChoice : value;
+            var selection = { id: value };
+            this.context.selectOption(this.props.id, selection) && this.context.setSelection(this.props.id, function () {
+                return selection;
+            });
+        },
+        get: function get() {
+            console.log(this.context.selections);
+            return this.context.selections[this.props.id] && this.context.selections[this.props.id].id;
+        }
+    }]);
+
+    return Input;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+Input.contextTypes = phraseContextTypes;
+var Word = function (_React$Component2) {
+    _inherits(Word, _React$Component2);
+
+    function Word() {
+        _classCallCheck(this, Word);
+
+        var _this2 = _possibleConstructorReturn(this, (Word.__proto__ || Object.getPrototypeOf(Word)).apply(this, arguments));
+
+        _this2.onValueChange = function (options, value) {
+            var id = _this2.props.id;
+            var _this2$context = _this2.context,
+                selectOption = _this2$context.selectOption,
+                setSelection = _this2$context.setSelection;
+
+            var preSelectedChoice = _this2.context.choices[_this2.getKey()];
+            var preSelection = !_this2.context.selections.hasOwnProperty(id) && preSelectedChoice && options.find(function (_ref2) {
+                var id = _ref2.id;
+                return id === preSelectedChoice;
+            });
+            var selection = preSelection || options.find(function (_ref3) {
+                var id = _ref3.id;
+                return id === value;
+            });
+            selectOption(id, selection) && setSelection(id, function () {
+                return selection;
+            });
+        };
+        return _this2;
+    }
+
+    _createClass(Word, [{
+        key: 'getOptions',
+        value: function getOptions() {
+            return this.props.getOptions(this.context.selections);
+        }
+    }, {
+        key: 'getKey',
+        value: function getKey() {
+            var parentId = this.context.parentId;
+            var id = this.props.id;
+
+            return typeof id === 'string' ? parentId + '.' + id : parentId + '[' + id + ']';
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this3 = this;
+
+            var _props = this.props,
+                placeholder = _props.placeholder,
+                required = _props.required;
+
+            var options = this.getOptions();
+            // Only show the select if there are options
+            if (options) {
+                var key = this.getKey();
+                return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](SelectComponent, { required: required, key: key, name: key, id: key, placeholder: placeholder, onValueChange: function onValueChange(value) {
+                        return _this3.onValueChange(options, value);
+                    }, value: this.value, options: options });
+            } else return null;
+        }
+    }, {
+        key: 'value',
+        get: function get() {
+            return this.context.selections[this.props.id] && this.context.selections[this.props.id].id;
+        }
+    }]);
+
+    return Word;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+Word.contextTypes = phraseContextTypes;
+
+var AbstractPhrase = function (_React$Component3) {
+    _inherits(AbstractPhrase, _React$Component3);
+
+    function AbstractPhrase() {
+        _classCallCheck(this, AbstractPhrase);
+
+        return _possibleConstructorReturn(this, (AbstractPhrase.__proto__ || Object.getPrototypeOf(AbstractPhrase)).apply(this, arguments));
+    }
+
+    _createClass(AbstractPhrase, [{
+        key: 'getChildContext',
+        value: function getChildContext() {
+            var _this5 = this;
+
+            var self = this;
+            return {
+                get parentId() {
+                    var parent = self.context.parentId;
+                    var child = self.props.id;
+                    return typeof child === 'string' ? parent + '.' + child : parent + '[' + child + ']';
+                },
+                setSelection: function setSelection(id, f) {
+                    _this5.context.setSelection(_this5.props.id, function (prevSelections) {
+                        return _this5.updateSelections(id, f, prevSelections);
+                    });
+                },
+                selectOption: function selectOption(id, selection) {
+                    var parent = _this5.props.id;
+                    var child = id;
+                    var key = typeof child === 'string' ? parent + '.' + child : parent + '[' + child + ']';
+                    return _this5.context.selectOption(_this5.props.id + '.' + id, selection);
+                },
+                get selections() {
+                    return self.context.selections[self.props.id];
+                },
+                get choices() {
+                    return self.context.choices;
+                }
+            };
+        }
+    }, {
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            var _this6 = this;
+
+            this.context.setSelection(this.props.id, function () {
+                return _this6.getInitialSelections();
+            });
+        }
+    }]);
+
+    return AbstractPhrase;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+
+AbstractPhrase.contextTypes = phraseContextTypes;
+AbstractPhrase.childContextTypes = phraseContextTypes;
+var Sentence = function (_React$Component4) {
+    _inherits(Sentence, _React$Component4);
+
+    function Sentence(props) {
+        _classCallCheck(this, Sentence);
+
+        var _this7 = _possibleConstructorReturn(this, (Sentence.__proto__ || Object.getPrototypeOf(Sentence)).call(this, props));
+
+        _this7.state = {
+            choices: {},
+            selections: {}
+        };
+        return _this7;
+    }
+
+    _createClass(Sentence, [{
+        key: 'getChildContext',
+        value: function getChildContext() {
+            var _this8 = this;
+
+            return {
+                parentId: this.props.id,
+                setSelection: function setSelection(id, f) {
+                    _this8.setState(function (_ref4) {
+                        var selections = _ref4.selections;
+                        return {
+                            selections: Object.assign({}, selections, _defineProperty({}, id, f(selections[id])))
+                        };
+                    });
+                },
+                selectOption: function selectOption(id, selection) {
+                    var key = _this8.props.id + '.' + id;
+                    var currValue = _this8.state.choices[key];
+                    if (currValue === (selection && selection.id)) return false;
+                    _this8.setState(function (_ref5) {
+                        var choices = _ref5.choices;
+
+                        var currValue = choices[key];
+                        if (currValue === (selection && selection.id)) return;
+                        return {
+                            choices: Object.assign({}, choices, _defineProperty({}, key, selection && selection.id))
+                        };
+                    });
+                    return true;
+                },
+                selections: this.state.selections,
+                choices: this.props.choices
+            };
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", { className: "sentence-crafter" }, this.props.children);
+        }
+    }]);
+
+    return Sentence;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+Sentence.childContextTypes = AbstractPhrase.contextTypes;
+var List = function (_AbstractPhrase) {
+    _inherits(List, _AbstractPhrase);
+
+    function List() {
+        _classCallCheck(this, List);
+
+        return _possibleConstructorReturn(this, (List.__proto__ || Object.getPrototypeOf(List)).apply(this, arguments));
+    }
+
+    _createClass(List, [{
+        key: 'getInitialSelections',
+        value: function getInitialSelections() {
+            return [];
+        }
+    }, {
+        key: 'updateSelections',
+        value: function updateSelections(idx, f, prevSelection) {
+            return [].concat(_toConsumableArray(prevSelection.slice(0, idx)), [f(prevSelection[idx])], _toConsumableArray(prevSelection.slice(idx + 1)));
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var currSelection = this.context.selections[this.props.id];
+            if (Array.isArray(currSelection)) {
+                var components = [];
+                for (var idx = 0, cont = true; cont; idx++) {
+                    var component = this.props.children(this.context.selections, idx);
+                    if (!component) break;
+                    components.push(component);
+                    cont = !!currSelection[idx];
+                }
+                return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", null, components);
+            } else return null;
+        }
+    }]);
+
+    return List;
+}(AbstractPhrase);
+var Phrase = function (_AbstractPhrase2) {
+    _inherits(Phrase, _AbstractPhrase2);
+
+    function Phrase() {
+        _classCallCheck(this, Phrase);
+
+        return _possibleConstructorReturn(this, (Phrase.__proto__ || Object.getPrototypeOf(Phrase)).apply(this, arguments));
+    }
+
+    _createClass(Phrase, [{
+        key: 'getInitialSelections',
+        value: function getInitialSelections() {
+            return {};
+        }
+    }, {
+        key: 'updateSelections',
+        value: function updateSelections(id, f, currSelection) {
+            return Object.assign({}, currSelection, _defineProperty({}, id, f(currSelection[id])));
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var currSelection = this.context.selections[this.props.id];
+            if (currSelection) {
+                return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", null, this.props.children(this.context.selections));
+            } else return null;
+        }
+    }]);
+
+    return Phrase;
+}(AbstractPhrase);
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(4);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(6)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!./style.css", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!./style.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(5)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, ".sentence-crafter-input {\n    background: inherit;\n    color: inherit;\n    display: inline-block;\n    border: inherit;\n    margin: 0 0.1em;\n    -webkit-appearance: inherit;\n    -webkit-border-radius: inherit;\n    border-radius: inherit;\n    font: inherit;\n}\n\n.sentence-crafter-input-hidden {\n    position: absolute;\n    visibility: hidden;\n}\n\n@keyframes sentence-crafter-blinker {\n    0% { opacity: 0.4; }\n    50% { opacity: 0.6; }\n    100% { opacity: 0.4; }\n}", ""]);
+
+// exports
+
+
+/***/ }),
+/* 5 */,
+/* 6 */,
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Field", function() { return Field; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DateField", function() { return DateField; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BooleanField", function() { return BooleanField; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MultiChoiceField", function() { return MultiChoiceField; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NestedField", function() { return NestedField; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Table", function() { return Table; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__index__ = __webpack_require__(1);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+var DynamicInput = function (_Input) {
+    _inherits(DynamicInput, _Input);
+
+    function DynamicInput() {
+        _classCallCheck(this, DynamicInput);
+
+        var _this = _possibleConstructorReturn(this, (DynamicInput.__proto__ || Object.getPrototypeOf(DynamicInput)).apply(this, arguments));
+
+        _this.resize = function (input) {
+            if (!input || !_this.hiddenSpan || _this.props.type === 'date') return;
+            _this.hiddenSpan.innerText = input.value ? input.value + '.' : input.placeholder;
+
+            var _this$hiddenSpan$getB = _this.hiddenSpan.getBoundingClientRect(),
+                width = _this$hiddenSpan$getB.width,
+                height = _this$hiddenSpan$getB.height;
+
+            input.style.width = width + 'px';
+        };
+        return _this;
+    }
+
+    _createClass(DynamicInput, [{
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            var key = this.getKey();
+            return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", { ref: function ref($) {
+                    return _this2.hiddenSpan = $;
+                }, style: {
+                    minWidth: '20px',
+                    position: 'absolute',
+                    visibility: 'hidden'
+                } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("input", { className: 'sentence-crafter-input', placeholder: '<blank>', type: this.props.type, key: key, name: key, id: key, ref: function ref($) {
+                    return _this2.resize($);
+                }, onChange: function onChange(e) {
+                    return _this2.resize(e.target);
+                }, value: this.value }));
+        }
+    }]);
+
+    return DynamicInput;
+}(__WEBPACK_IMPORTED_MODULE_1__index__["Input"]);
+
+var DateInput = function (_Input2) {
+    _inherits(DateInput, _Input2);
+
+    function DateInput() {
+        _classCallCheck(this, DateInput);
+
+        return _possibleConstructorReturn(this, (DateInput.__proto__ || Object.getPrototypeOf(DateInput)).apply(this, arguments));
+    }
+
+    _createClass(DateInput, [{
+        key: 'onValueChange',
+        value: function onValueChange(input) {
+            if (input) this.value = input.value;
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this4 = this;
+
+            var key = this.getKey();
+            return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("input", { className: 'sentence-crafter-input', placeholder: '<blank>', type: 'date', key: key, name: key, id: key, ref: function ref($) {
+                    return _this4.onValueChange($);
+                }, onChange: function onChange(e) {
+                    return _this4.onValueChange(e.target);
+                }, value: this.value });
+        }
+    }]);
+
+    return DateInput;
+}(__WEBPACK_IMPORTED_MODULE_1__index__["Input"]);
+
+var Field = function () {
+    function Field(id, value) {
+        _classCallCheck(this, Field);
+
+        this.id = id;
+        this.value = value;
+        this.conditions = [{ id: 'eq', value: 'is' }, { id: 'neq', value: 'is not' }];
+    }
+
+    _createClass(Field, [{
+        key: 'Query',
+        value: function Query() {
+            return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](DynamicInput, { key: 'value', id: 'value' });
+        }
+    }]);
+
+    return Field;
+}();
+var DateField = function (_Field) {
+    _inherits(DateField, _Field);
+
+    function DateField() {
+        _classCallCheck(this, DateField);
+
+        var _this5 = _possibleConstructorReturn(this, (DateField.__proto__ || Object.getPrototypeOf(DateField)).apply(this, arguments));
+
+        _this5.conditions = [{ id: 'gt', value: 'after' }, { id: 'lt', value: 'before' }];
+        return _this5;
+    }
+
+    _createClass(DateField, [{
+        key: 'Query',
+        value: function Query() {
+            return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](DateInput, { key: 'value', id: 'value' });
+        }
+    }]);
+
+    return DateField;
+}(Field);
+var BooleanField = function (_Field2) {
+    _inherits(BooleanField, _Field2);
+
+    function BooleanField() {
+        _classCallCheck(this, BooleanField);
+
+        return _possibleConstructorReturn(this, (BooleanField.__proto__ || Object.getPrototypeOf(BooleanField)).apply(this, arguments));
+    }
+
+    return BooleanField;
+}(Field);
+var MultiChoiceField = function (_Field3) {
+    _inherits(MultiChoiceField, _Field3);
+
+    function MultiChoiceField(id, value, options) {
+        _classCallCheck(this, MultiChoiceField);
+
+        var _this7 = _possibleConstructorReturn(this, (MultiChoiceField.__proto__ || Object.getPrototypeOf(MultiChoiceField)).call(this, id, value));
+
+        _this7.options = options;
+        return _this7;
+    }
+
+    _createClass(MultiChoiceField, [{
+        key: 'Query',
+        value: function Query() {
+            var _this8 = this;
+
+            return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'value', placeholder: '(blank)', getOptions: function getOptions() {
+                    return _this8.options;
+                } });
+        }
+    }]);
+
+    return MultiChoiceField;
+}(Field);
+var NestedField = function (_Field4) {
+    _inherits(NestedField, _Field4);
+
+    function NestedField(id, value, subFields) {
+        _classCallCheck(this, NestedField);
+
+        var _this9 = _possibleConstructorReturn(this, (NestedField.__proto__ || Object.getPrototypeOf(NestedField)).call(this, id, value));
+
+        _this9.subFields = subFields;
+        return _this9;
+    }
+
+    return NestedField;
+}(Field);
+var Query = function Query(_ref) {
+    var table = _ref.table;
+
+    return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["List"], { id: 'query' }, function (_ref2, idx) {
+        var doQuery = _ref2.doQuery,
+            query = _ref2.query;
+        return (idx === 0 || query[idx - 1] && query[idx - 1].cont) && __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Phrase"], { key: idx, id: idx }, function (query) {
+            return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'fieldId', required: true, getOptions: function getOptions() {
+                    return query ? table.fields.filter(function (_ref3) {
+                        var id = _ref3.id;
+                        return !query.slice(0, idx).find(function (_ref4) {
+                            var fieldId = _ref4.fieldId;
+                            return fieldId && fieldId.id === id;
+                        });
+                    }) : table.fields;
+                } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'subFieldId', required: true, getOptions: function getOptions(_ref5) {
+                    var fieldId = _ref5.fieldId;
+                    return fieldId instanceof NestedField && fieldId.subFields;
+                } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'op', required: true, getOptions: function getOptions(_ref6) {
+                    var fieldId = _ref6.fieldId;
+                    return fieldId && fieldId.conditions;
+                } }), query[idx].fieldId && query[idx].fieldId.Query(), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'cont', placeholder: '(+and)', getOptions: function getOptions(_ref7) {
+                    var op = _ref7.op;
+                    return op && query.length < table.fields.length - 1 && [{ id: 'and', value: ', and' }];
+                } }));
+        });
+    });
+};
+var Alternatives = function Alternatives() {
+    return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["List"], { id: 'alternatives' }, function (_ref8, idx) {
+        var table = _ref8.table,
+            doQuery = _ref8.doQuery,
+            alternatives = _ref8.alternatives;
+        return table && doQuery && (idx === 0 || alternatives[idx - 1] && alternatives[idx - 1].cont) && __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Phrase"], { key: idx, id: idx }, function () {
+            return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](Query, { table: table }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'cont', placeholder: '(+or)', getOptions: function getOptions(_ref9) {
+                    var query = _ref9.query;
+                    return query && query.length && query[query.length - 1].fieldId && [{ id: 'or', value: '; or' }];
+                } }));
+        });
+    });
+};
+var Table = function Table(id, value, fields) {
+    _classCallCheck(this, Table);
+
+    this.id = id;
+    this.value = value;
+    this.fields = fields;
+};
+var getQueryField = function getQueryField(_ref10) {
+    var fieldId = _ref10.fieldId,
+        subFieldId = _ref10.subFieldId;
+    return fieldId && (fieldId instanceof NestedField ? subFieldId : fieldId);
+};
+var intervals = [{ id: 'year', value: 'Year' }, { id: 'month', value: 'Month' }, { id: 'day', value: 'Day' }, { id: 'hour', value: 'Hour' }, { id: 'minutes', value: 'Minute' }, { id: 'seconds', value: 'Second' }, { id: 'milliseconds', value: 'Millisecond' }];
+var ReportSelector = function ReportSelector(_ref11) {
+    var charts = _ref11.charts,
+        choices = _ref11.choices;
+    return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Sentence"], { id: 'report', choices: choices }, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'chart', required: true, getOptions: function getOptions() {
+            return charts;
+        } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'table', placeholder: 'table', required: true, getOptions: function getOptions(_ref12) {
+            var chart = _ref12.chart;
+            return chart && chart.tables;
+        } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'doQuery', placeholder: '(+filter)', getOptions: function getOptions(_ref13) {
+            var table = _ref13.table;
+            return table && [{ id: 'where', value: 'where' }];
+        } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](Alternatives, null), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", { key: 'grouped by' }, "grouped by"), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Phrase"], { id: 'group' }, function (_ref14) {
+        var table = _ref14.table;
+        return table && __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'dateInterval', required: true, getOptions: function getOptions(_ref15) {
+                var fieldId = _ref15.fieldId,
+                    subFieldId = _ref15.subFieldId;
+                return getQueryField({ fieldId: fieldId, subFieldId: subFieldId }) instanceof DateField && intervals;
+            } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'fieldId', required: true, getOptions: function getOptions() {
+                return table.fields;
+            } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'subFieldId', required: true, getOptions: function getOptions(_ref16) {
+                var fieldId = _ref16.fieldId;
+                return fieldId instanceof NestedField && fieldId.subFields;
+            } }));
+    }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'doSplit', placeholder: '(+split)', getOptions: function getOptions(_ref17) {
+            var table = _ref17.table,
+                group = _ref17.group;
+            return group && table && [{ id: 'split by', value: 'split by' }];
+        } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Phrase"], { id: 'split' }, function (_ref18) {
+        var table = _ref18.table,
+            group = _ref18.group,
+            doSplit = _ref18.doSplit;
+        return table && doSplit && group && __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'fieldId', required: true, getOptions: function getOptions() {
+                return table.fields.filter(function (field) {
+                    return field.id !== group.fieldId.id && !(field instanceof DateField);
+                });
+            } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__index__["Word"], { id: 'subFieldId', required: true, getOptions: function getOptions(_ref19) {
+                var fieldId = _ref19.fieldId;
+                return fieldId instanceof NestedField && fieldId.subFields;
+            } }));
+    }));
+};
+/* harmony default export */ __webpack_exports__["default"] = (ReportSelector);
+
+/***/ })
+],[7]);
+});
