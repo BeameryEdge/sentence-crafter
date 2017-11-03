@@ -6,6 +6,7 @@ const packageJson = require('./package.json');
 export default () => ({
     entry: {
         'index': path.join(__dirname, 'src/index.tsx'),
+        'ReportSelector': path.join(__dirname, 'src/ReportSelector.tsx'),
     },
 
     output: {
@@ -47,6 +48,10 @@ export default () => ({
                 loader: 'style-loader!css-loader',
             },
         ]
+    },
+
+    resolve: {
+        extensions: ['.js', '.ts', '.tsx','.css'],
     },
 
     plugins: [
