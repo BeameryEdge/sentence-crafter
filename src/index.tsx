@@ -123,7 +123,6 @@ export abstract class Input<T extends Selections=Selections, P extends Selection
             this.context.setSelection(this.props.id, () => selection)
     }
     get value(): string {
-        console.log(this.context.selections)
         return this.context.selections[this.props.id] &&
             this.context.selections[this.props.id].id
     }
