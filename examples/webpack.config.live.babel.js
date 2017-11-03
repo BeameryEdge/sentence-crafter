@@ -6,7 +6,7 @@ export default () => ({
         'react-hot-loader/patch',
         // activate HMR for React
 
-        'webpack-dev-server/client?http://localhost:8080',
+        'webpack-dev-server/client?http://localhost:8082',
         // bundle the client for webpack-dev-server
         // and connect to the provided endpoint
 

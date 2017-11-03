@@ -8,9 +8,8 @@ import './style.css'
  * @interface Option
  */
 export interface Option {
-    id?: string
+    id: string
     value: string
-    options?: Option[]
 }
 
 const blinkerStyle: React.CSSProperties = {
@@ -51,11 +50,11 @@ const SelectComponent = <T extends Option>  (props: {
             value={props.value||''}
             style={props.value?{}:blinkerStyle}
             name={props.name}
-            ref={$=>{select=$;resize()}}
+            ref={$=>{select=$;$&&onValueChange($.value);resize()}}
             onChange={e =>{onValueChange(e.target.value)}}>
-            <option
+            {props.required || <option
             className='sentence-crafter-option'
-            value={''} disabled={props.required}>{props.placeholder||'▾'}</option>
+            value=''>{props.placeholder||'▾'}</option>}
             {options.map(({id, value}) =>
                 <option
                 className='sentence-crafter-option'
@@ -65,224 +64,273 @@ const SelectComponent = <T extends Option>  (props: {
         </select>
     </span>
 }
-
-export interface SelectionsObject {
-    [x: string]: Option | Option[] | Selections
-}
+export type Selection = Option | Selections
+export type SelectionsObject = { [x: string]: Selection }
+export type SelectionList = Option[] | SelectionsObject[]
+export type Selections = SelectionsObject | SelectionList
 /**
- * Type of a set of selected options
+ * Configures a property of a phase set
  *
  * @export
- * @interface Selections
- */
-export type Selections = SelectionsObject | SelectionsObject[]
-
-/**
- * Configures a select component for a sentence set
- *
- * @export
- * @interface SelectConfigObject
+ * @interface SelectionProps
  * @template T
  * @template Selections
  */
-export interface SelectConfigObject<T extends Selections> {
+export interface SelectionProps<T extends Selections> {
     /**
-     * Maps to the id/name of the select
-     *
-     * @type {string}
-     * @memberOf SelectConfigObject
+     * Maps to the id/name of the property of the phrases
      */
     id: string | number,
-    /**
-     * Get a set of options for the component given the current selections
-     *
-     * @memberOf SelectConfigObject
-     */
-    getOptions?: (selections: T) => Option[],
-    /**
-     * Get a list of SelectConfigs to be used
-     *
-     * @memberOf SelectConfigObject
-     */
-    getConfigs?: (selections: T, id:string) => SelectConfig<T>[],
+}
+// Phrase Context
+export interface PhraseContext<S extends Selections> {
+    parentId: string,
+    selectOption: (id: string|number, selection: Option) => boolean,
+    setSelection: (id: string|number, f:(prevSelection: Selection) => Selection) => void,
+    selections: S
+    choices: { [x: string]: string }
+}
+export const phraseContextTypes = {
+    parentId: PropTypes.string.isRequired,
+    selectOption: PropTypes.func.isRequired,
+    setSelection: PropTypes.func.isRequired,
+    selections: PropTypes. PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.array,
+    ]),
+    choices: PropTypes.object.isRequired
+}
+
+
+export abstract class Input<T extends Selections=Selections, P extends SelectionProps<T>=SelectionProps<T>, S={}> extends React.Component<P, S> {
+    context: PhraseContext<T>
+    static contextTypes = phraseContextTypes
+    props: P & { children?: React.ReactNode  }
+    getKey(){
+        const {parentId} = this.context
+        const {id} = this.props
+        return typeof id ==='string' ? parentId + '.' + id : parentId + '[' + id + ']'
+    }
+    set value(value: string){
+        const {id} = this.props
+        const {selectOption, setSelection} = this.context
+        const preSelectedChoice = this.context.choices[this.getKey()]
+        const weMadeSelection = this.context.selections.hasOwnProperty(id)
+        value = (!weMadeSelection && preSelectedChoice) ? preSelectedChoice : value
+
+        const selection = { id: value } as Option
+        this.context.selectOption(this.props.id, selection) &&
+            this.context.setSelection(this.props.id, () => selection)
+    }
+    get value(): string {
+        console.log(this.context.selections)
+        return this.context.selections[this.props.id] &&
+            this.context.selections[this.props.id].id
+    }
+    abstract render()
+}
+
+// WORD
+/**
+ * Properties for a single 'word' select component
+ */
+export interface WordProps<T extends Selections> extends SelectionProps<T> {
     /**
      * Defines whether the select component requires an input or is allowed to
      * be empty.
-     *
      * @default false
-     * @type {boolean}
-     * @memberOf SelectConfigObject
      */
     required?: boolean
     /**
-     * Defines whether the select component expands as a list
-     *
-     * @default false
-     * @type {boolean}
-     * @memberOf SelectConfigObject
+     * String to use as a placeholder when no value selected
+     * @default '▾'
      */
-    list?: boolean
+    placeholder?: string;
     /**
-     * If the component is a list and getConfigs is defined, then this defines
-     * the condition on the last sub-component must satisfy for the next
-     * sub-component to render
-     *
-     * @default false
-     * @type {boolean}
-     * @memberOf SelectConfigObject
+     * Get a set of options for the component given the current selections
      */
-    listContinuationCondition?: <K extends keyof T>(selections: T[K]) => boolean
+    getOptions: (selections: T) => Option[],
+}
+export class Word<T extends Selections> extends React.Component<WordProps<T>, { options: Option[], selected: Option }>{
+    static contextTypes = phraseContextTypes
+    context: PhraseContext<T>
+    onValueChange = (options, value) =>{
+        const {id} = this.props
+        const {selectOption, setSelection} = this.context
+        const preSelectedChoice = this.context.choices[this.getKey()]
+        const preSelection = !this.context.selections.hasOwnProperty(id) &&
+            preSelectedChoice &&
+            options.find(({id}) => id === preSelectedChoice)
+
+        const selection = preSelection || options.find(({id}) => id === value)
+        selectOption(id, selection) && setSelection(id, () => selection)
+    }
+    getOptions(){
+        return this.props.getOptions(this.context.selections)
+    }
+    getKey(){
+        const {parentId} = this.context
+        const {id} = this.props
+        return typeof id ==='string' ? parentId + '.' + id : parentId + '[' + id + ']'
+    }
+    get value(): string {
+        return this.context.selections[this.props.id] &&
+            this.context.selections[this.props.id].id
+    }
+    render(){
+        const { placeholder, required } = this.props
+        const options = this.getOptions()
+        // Only show the select if there are options
+        if (options) {
+            const key = this.getKey()
+            return (
+                <SelectComponent
+                required={required}
+                key={key}
+                name={key}
+                id={key}
+                placeholder={placeholder}
+                onValueChange={value=>this.onValueChange(options,value)}
+                value={this.value}
+                options={options} />
+            )
+        } else return null
+    }
 }
 
-export type SelectConfig<T extends Selections=Selections> =
-    SelectConfigObject<T> | ((selections: T, id: string) => React.ReactNode)
-
-export interface SentenceProps<T extends Selections=Selections> {
-    id: string
-    choices: { [x: string]: string }
-    config: SelectConfig<T>[]
-}
-
-interface SentenceState<T extends Selections> {
-    choices?: { [x: string]: string }
-    selections: T,
-    components: React.ReactNode[],
-}
-export class Sentence<T extends Selections> extends React.PureComponent<SentenceProps<T>, SentenceState<T>> {
-    constructor(props: SentenceProps<T>){
-        super(props)
-        this.state = {
-            choices: this.props.choices || {} as { [x: string]: string },
-            selections: {} as T,
-            components: [] as React.ReactNode[]
+abstract class AbstractPhrase<T extends Selections, U extends Selections, P extends SelectionProps<T>, S=never> extends React.Component<P, S> {
+    static contextTypes = phraseContextTypes
+    context: PhraseContext<T>
+    static childContextTypes = phraseContextTypes
+    getChildContext(): PhraseContext<U> {
+        const self = this;
+        return {
+            get parentId(){
+                const parent = self.context.parentId
+                const child = self.props.id
+                return typeof child ==='string' ?
+                    parent+ '.' + child :
+                    parent + '[' + child + ']'
+            },
+            setSelection: (id: number | string, f:(prevSelection: Selection)=>Selection) => {
+                this.context.setSelection(this.props.id, (prevSelections: U) => this.updateSelections(id, f, prevSelections))
+            },
+            selectOption: (id: string | number, selection: Option) => {
+                const parent = this.props.id
+                const child = id
+                const key = typeof child ==='string' ?
+                    parent+ '.' + child :
+                    parent + '[' + child + ']'
+                return this.context.selectOption(this.props.id + '.' + id, selection)
+            },
+            get selections(){ return self.context.selections[self.props.id as (string| number)] },
+            get choices(){ return self.context.choices }
         }
     }
     componentWillMount(){
-        this.updateSelections()
+        this.context.setSelection(this.props.id, () => this.getInitialSelections())
     }
-    parseSelectConfig = (prefix) => ({
-        selections, components
-    }: SentenceState<T>, config: SelectConfig, i: number) => {
-        if (typeof config === 'function') {
-            const element = config(selections, prefix)
-            if (element) {
-                components.push(element)
-            }
-            return { selections, components }
-        } else {
-            const {
-                id:suffix,
-                getOptions,
-                getConfigs,
-                required,
-                list,
-                listContinuationCondition,
-            } = config
-            const id = prefix + '.' + suffix
-            if (getConfigs){
-                const configs = getConfigs(selections, prefix);
-                if(configs) {
-                    if (list) {
-                        const prev = selections[suffix]
-                        selections[suffix] = []
-                        for (let idx = 0, r, cont=true; cont; idx++) {
-                            const r = configs.reduce(this.parseSelectConfig(id+'.'+idx), {
-                                selections: (prev && prev[idx]) || {} as T,
-                                components: components as React.ReactNode[]
-                            })
-                            selections[suffix].push(r.selections)
-                            cont = listContinuationCondition(r.selections)
-                        }
-                    } else {
-                        const r = configs.reduce(this.parseSelectConfig(id), {
-                            selections: selections[suffix] || {} as T,
-                            components: components as React.ReactNode[]
-                        })
-                        selections[suffix] = r.selections
-                    }
-                }
-            } else if (getOptions){
-                if (list) {
-                    selections[suffix] = []
-                    for (let idx = 0, selection, cont=true; cont; idx++) {
-                        selection = this.processOptions(id+'.'+idx, {
-                            selections,
-                            components
-                        }, config)
-                        console.log('selection',id+'.'+idx,selection)
-                        if (selection) {
-                            selections[suffix].push(selection)
-                        }
-                        cont = selection && !!selection.id
-                    }
-                } else {
-                    selections[suffix] = this.processOptions(id, {
-                        selections,
-                        components
-                    }, config) || selections[suffix]
-                    console.log('[setSelection]', id, selections[suffix])
-                }
-            }
-            return { selections, components }
-        }
-    }
-    /**
-     * Process 'getOptions' from Sentence config
-     * Note this mutates the state inputs
-     */
-    processOptions(
-        id: string,
-        {selections, components}: SentenceState<T>,
-        {id:suffix, getOptions,required}: SelectConfigObject<T>
-    ){
-        console.log('processOptions',id, selections)
-        const availableOptions = getOptions(selections)
-        // Only show the select if there are options
-        if (availableOptions) {
-            components.push(
-                <SelectComponent
-                required={required}
-                key={id}
-                onValueChange={value=>this.setState({
-                    choices: {...this.state.choices, [id]: value }
-                }, () => {
-                    this.updateSelections()
-                })}
-                name={id}
-                id={id}
-                value={this.state.choices[id]}
-                options={availableOptions} />)
-            return availableOptions.find(option => option.id === this.state.choices[id])
-        }
-    }
-    updateSelections(){
-        const {
-            id: prefix='',
-            config,
-            children,
-        } = this.props
+    abstract getInitialSelections(): U
+    abstract updateSelections(id: number | string, f:(prevSelections: Selection)=>Selection, prevSelection: U): U
+}
 
-        const state: SentenceState<T> = config.reduce(this.parseSelectConfig(prefix), {
+
+// Sentence
+export interface SentenceProps<T extends SelectionsObject> extends SelectionProps<{ [x:string]: SelectionsObject }> {
+    choices: { [x: string]: string }
+    children: React.ReactNode
+}
+interface SentenceState<T extends SelectionsObject> {
+    choices?: { [x: string]: string }
+    selections: T,
+}
+
+export class Sentence<T extends SelectionsObject> extends React.Component<SentenceProps<T>, SentenceState<T>>{
+    constructor(props: SentenceProps<T>){
+        super(props)
+        this.state = {
+            choices: {} as { [x: string]: string },
+            selections: {} as T,
+        }
+    }
+    static childContextTypes = AbstractPhrase.contextTypes
+    getChildContext(): PhraseContext<T> {
+        return {
+            parentId: this.props.id as string,
+            setSelection: (id: number | string, f:(prevSelection: Selection)=>Selection) => {
+                this.setState(({ selections }: SentenceState<T>) => ({
+                    selections: {...(selections as Object), [id]: f(selections[id]) }
+                }))
+            },
+            selectOption: (id: string | number, selection: Option) => {
+                const key = this.props.id+'.'+id
+                const currValue = this.state.choices[key]
+                if (currValue === (selection && selection.id)) return false;
+                this.setState(({ choices }) => {
+                    const currValue = choices[key]
+                    if (currValue === (selection && selection.id)) return;
+                    return {
+                        choices: {...choices, [key]: selection && selection.id },
+                    }
+                })
+                return true;
+            },
             selections: this.state.selections,
-            components: []
-        })
-
-        console.log('[next]', state.components.length)
-        console.log('[prev]',this.state.components.length)
-        console.log('[next-sel]',this.state.selections)
-        if (state.components.length !== this.state.components.length) {
-            this.setState(state, () => {
-                this.updateSelections()
-            })
-        } else {
-            this.setState(state)
+            choices: this.props.choices
         }
     }
     render (){
         return <span className="sentence-crafter">
-            {this.state.components}
+            {this.props.children}
         </span>
     }
 }
 
-export const SelectSwitchCase: React.StatelessComponent<{ id: string, value:string, children?: React.ReactNode }> =(props) => null
+// LIST
+export interface ListProps<T extends Selections> extends SelectionProps<T> {
+    children: (selections: T, idx:number) => React.ReactNode
+}
+export class List<T extends Selections> extends AbstractPhrase<T, SelectionList, ListProps<T>>{
+    getInitialSelections(){
+        return []
+    }
+    updateSelections(idx: number, f:(prevSelection: Selection)=>Selection, prevSelection: SelectionList){
+        return [
+            ...prevSelection.slice(0, idx),
+            f(prevSelection[idx]),
+            ...prevSelection.slice(idx+1),
+        ] as SelectionList
+    }
+    render(){
+        const currSelection = this.context.selections[this.props.id] as (Option | SelectionsObject)[]
+        if (Array.isArray(currSelection)) {
+            const components = []
+            for (let idx = 0, cont=true; cont; idx++) {
+                const component = this.props.children(this.context.selections, idx)
+                if (!component) break;
+                components.push(component)
+                cont = !!currSelection[idx]
+            }
+            return <span>{components}</span>
+        } else return null
+    }
+}
+
+// Phrase
+export interface PhraseProps<T extends Selections> extends SelectionProps<T> {
+    children: (selections: T) => React.ReactNode
+}
+export class Phrase<T extends Selections, S extends SelectionsObject> extends AbstractPhrase<T, SelectionsObject, PhraseProps<T>>{
+    getInitialSelections(){
+        return {}
+    }
+    updateSelections(id: string, f: (prevSelection:Selection) => Selection, currSelection: SelectionsObject){
+        return {...currSelection, [id]: f(currSelection[id]) }
+    }
+    render(){
+        const currSelection = this.context.selections[this.props.id] as S
+        if (currSelection) {
+            return <span>{this.props.children(this.context.selections)}</span>
+        } else return null
+    }
+}

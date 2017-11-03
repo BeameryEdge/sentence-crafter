@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Sentence, Option, SelectConfig, SelectionsObject } from '../src/index'
+import { Sentence, Option, Selection, Word, List, Phrase } from '../src/index'
 
 const wordToOption = (x:string) => ({ id:x, value:x }) as Option
 
@@ -97,31 +97,32 @@ const adjectives = [
     'early', 'young', 'important', 'few', 'public', 'bad', 'same', 'able'
 ].map(value => ({id:value || 'continue', value}) as Option)
 
-interface NounPhraseSelections extends SelectionsObject {
+interface NounPhraseSelections {
+    [x: string]: Selection
     det: Determiner
     adj: Option[]
     noun: Noun
     prep: Option
 }
-const nounPhraseConfig: SelectConfig<NounPhraseSelections>[] = [
-    { id: 'det', required:true, getOptions:() => determiners },
-    { id: 'adj', list: true, getOptions: (x) => console.log('adj', x) ||x.noun && adjectives, },
-    { id: 'noun', required: true, getOptions:({ det }: { det: Determiner }) =>
-        det && (
-            det.id === 'a' ? nouns[det.type].filter(startsWithConsonant) :
-            det.id === 'an' ? nouns[det.type].filter(startsWithVowel) :
-            nouns[det.type]
-        ) },
-    { id: 'PP', getConfigs: ({ noun }) => noun && prepositionPhraseConfig },
-]
+// const nounPhraseConfig: SelectConfig<NounPhraseSelections>[] = [
+//     { id: 'det', required:true, getOptions:() => determiners },
+//     { id: 'adj', list: true, getOptions: ({ noun }) => noun && adjectives, },
+//     { id: 'noun', getOptions:({ det }) =>
+//         det && (
+//             det.id === 'a' ? nouns[det.type].filter(startsWithConsonant) :
+//             det.id === 'an' ? nouns[det.type].filter(startsWithVowel) :
+//             nouns[det.type]
+//         ) },
+//     { id: 'PP', getConfigs: ({ noun }) => noun && prepositionPhraseConfig },
+// ]
 interface PrepositionPhraseSelections extends NounPhraseSelections {
     prep: Option
 }
-const prepositionPhraseConfig: SelectConfig<PrepositionPhraseSelections>[] = [
-    { id: 'prep', getOptions:() => prepositions },
-    { id: 'det', required:true, getOptions:({ prep }) => prep && determiners },
-    ...nounPhraseConfig.slice(1)
-]
+// const prepositionPhraseConfig: SelectConfig<PrepositionPhraseSelections>[] = [
+//     { id: 'prep', getOptions:() => prepositions },
+//     { id: 'det', required:true, getOptions:({ prep }) => prep && determiners },
+//     ...nounPhraseConfig.slice(1)
+// ]
 
 
 const verbs = [
@@ -183,23 +184,43 @@ const tenses = {
     ],
 }
 
-interface VerbPhraseSelections extends NounPhraseSelections {
-    tense: Option,
-    verb: Option,
-}
-const verbPhraseConfig = (type: Noun["type"]) => [
-    { id: 'tense', required: true, getOptions:() => tenses[type] },
-    { id: 'verb', required: true, getOptions:({ tense }: { tense: Option }) => tense && verbs[tense.id]},
-    { id: 'det', required: true, getOptions:({ verb }) => verb && determiners },
-    ...nounPhraseConfig.slice(1)
-] as SelectConfig<VerbPhraseSelections>[]
+// interface VerbPhraseSelections extends NounPhraseSelections {
+//     tense: Option,
+//     verb: Option,
+// }
 
-interface PoemSelection extends SelectionsObject {
-    line: {
-        NP: NounPhraseSelections,
-        VP: VerbPhraseSelections
-    }
-}
+// interface PoemSelection extends SelectionsObject {
+//     line: {
+//         NP: NounPhraseSelections,
+//         VP: VerbPhraseSelections
+//     }
+// }
+
+const VerbPhrase = () => <span>
+    <Word id='tense' getOptions={({ noun }) => noun && tenses[noun.type] }/>
+    <Word id='verb' required getOptions={({ noun, tense }) => noun && tense && verbs[tense.id]}/>
+    <Phrase id='NP'>{({ verb }) => verb && <NounPhrase/>}</Phrase>
+</span>
+
+const NounPhrase = () => <span>
+    <Word id='det' getOptions={() => determiners} />
+    <List id='adj'>{({noun, adj}: NounPhraseSelections, idx) =>
+        noun && <Word key={idx} id={idx} getOptions={() => adjectives}/>
+    }</List>
+    <Word id='noun' getOptions={({ det }: NounPhraseSelections) =>
+        det && (
+            det.id === 'a' ? nouns[det.type].filter(startsWithConsonant) :
+            det.id === 'an' ? nouns[det.type].filter(startsWithVowel) :
+            nouns[det.type]
+        ) }/>
+    <Phrase id='PP'>{({ noun }) => noun &&
+        <span>
+            <Word id='prep' getOptions={() => prepositions}/>
+            <Phrase id='NP'>{({ prep }) => prep && <NounPhrase/>}</Phrase>
+        </span>
+    }</Phrase>
+</span>
+
 class Example extends React.Component {
     render() {
         return (
@@ -207,22 +228,20 @@ class Example extends React.Component {
                 textAlign: 'center'
             }}>
                 <h1>
-                    <Sentence id='title' choices={choices} config={nounPhraseConfig}/>
+                    <Sentence id='title' choices={choices}>
+                        <NounPhrase />
+                        <VerbPhrase />
+                    </Sentence>
                 </h1>
                 <p>
-                    <Sentence id='poem' choices={choices} config={[{
-                        id: 'line',
-                        list: true,
-                        listContinuationCondition: ({ NP }: PoemSelection["line"]) =>
-                            NP && !!NP.noun,
-                        getConfigs: () => [
-                            { id: 'NP', getConfigs: () => nounPhraseConfig },
-                            { id: 'VP', getConfigs: ({ NP }: PoemSelection["line"]) =>
-                                NP && NP.noun && verbPhraseConfig(NP.noun.type) },
-                            (_, id) => <br key={id+'.br'}/>
-                        ]
-                    }]}/>
-                    <br />
+                    <Sentence id='poem' choices={choices}>
+                        <List id='line'>{({ line }, idx) =>
+                            (idx === 0 || (line[idx-1] && line[idx-1].noun)) &&
+                            <Phrase key={idx} id={idx}>{({ }) => <span>
+                                <NounPhrase /> <VerbPhrase />,<br/>
+                            </span>}</Phrase>
+                        }</List>
+                    </Sentence>
                     <input type="submit" value="Save"/>
                 </p>
                 <footer style={{
