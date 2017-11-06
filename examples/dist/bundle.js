@@ -10222,11 +10222,6 @@ var prepositions = ['of', 'in', 'to', 'for', 'with', 'on', 'at', 'from', 'by', '
 var adjectives = ['good', 'new', 'first', 'last', 'long', 'great', 'little', 'own', 'other', 'old', 'right', 'big', 'high', 'different', 'small', 'large', 'next', 'early', 'young', 'important', 'few', 'public', 'bad', 'same', 'able'].map(function (value) {
     return { id: value || 'continue', value: value };
 });
-// const prepositionPhraseConfig: SelectConfig<PrepositionPhraseSelections>[] = [
-//     { id: 'prep', getOptions:() => prepositions },
-//     { id: 'det', required:true, getOptions:({ prep }) => prep && determiners },
-//     ...nounPhraseConfig.slice(1)
-// ]
 var verbs = [{ present: 'being', future: 'be', past: 'been' }, { present: 'having', future: 'have', past: 'had' }, { present: 'doing', future: 'do', past: 'done' }, { present: 'saying', future: 'say', past: 'said' }, { present: 'getting', future: 'get', past: 'got' }, { present: 'making', future: 'make', past: 'made' }, { present: 'going', future: 'go', past: 'gone' }, { present: 'knowing', future: 'know', past: 'known' }, { present: 'taking', future: 'take', past: 'taken' }, { present: 'seeing', future: 'see', past: 'seen' }, { present: 'coming', future: 'come', past: 'come' }, { present: 'thinking', future: 'think', past: 'thought' }, { present: 'looking', future: 'look', past: 'looked' }, { present: 'wanting', future: 'want', past: 'wanted' }, { present: 'giving', future: 'give', past: 'given' }, { present: 'using', future: 'use', past: 'used' }, { present: 'finding', future: 'find', past: 'found' }, { present: 'telling', future: 'tell', past: 'told' }, { present: 'asking', future: 'ask', past: 'asked' }, { present: 'working', future: 'work', past: 'worked' }, { present: 'seeming', future: 'seem', past: 'seemed' }, { present: 'feeling', future: 'feel', past: 'felt' }, { present: 'trying', future: 'try', past: 'tried' }, { present: 'leaving', future: 'leave', past: 'left' }, { present: 'calling', future: 'call', past: 'called' }].reduce(function (_ref4, verb) {
     var past = _ref4.past,
         present = _ref4.present,
@@ -10254,69 +10249,59 @@ var tenses = {
     s: [{ id: 'present', value: 'is' }, { id: 'future', value: 'will' }, { id: 'past', value: 'has' }],
     p: [{ id: 'present', value: 'are' }, { id: 'future', value: 'will' }, { id: 'past', value: 'have' }]
 };
-// interface VerbPhraseSelections extends NounPhraseSelections {
-//     tense: Option,
-//     verb: Option,
-// }
-// interface PoemSelection extends SelectionsObject {
-//     line: {
-//         NP: NounPhraseSelections,
-//         VP: VerbPhraseSelections
-//     }
-// }
-var VerbPhrase = function VerbPhrase() {
-    return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* Word */], { id: 'tense', getOptions: function getOptions(_ref5) {
-            var noun = _ref5.noun;
-            return noun && tenses[noun.type];
-        } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* Word */], { id: 'verb', required: true, getOptions: function getOptions(_ref6) {
-            var noun = _ref6.noun,
-                tense = _ref6.tense;
-            return noun && tense && verbs[tense.id];
-        } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["b" /* Phrase */], { id: 'NP' }, function (_ref7) {
-        var verb = _ref7.verb;
-        return verb && __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](NounPhrase, null);
-    }));
-};
 var NounPhrase = function NounPhrase() {
     return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* Word */], { id: 'det', getOptions: function getOptions() {
             return determiners;
-        } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["c" /* List */], { id: 'adj' }, function (_ref8, idx) {
-        var noun = _ref8.noun,
-            adj = _ref8.adj;
+        } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["b" /* List */], { id: 'adj' }, function (_ref5, idx) {
+        var noun = _ref5.noun,
+            adj = _ref5.adj;
         return noun && __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* Word */], { key: idx, id: idx, getOptions: function getOptions() {
                 return adjectives;
             } });
-    }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* Word */], { id: 'noun', getOptions: function getOptions(_ref9) {
-            var det = _ref9.det;
+    }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* Word */], { id: 'noun', getOptions: function getOptions(_ref6) {
+            var det = _ref6.det;
             return det && (det.id === 'a' ? nouns[det.type].filter(startsWithConsonant) : det.id === 'an' ? nouns[det.type].filter(startsWithVowel) : nouns[det.type]);
-        } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["b" /* Phrase */], { id: 'PP' }, function (_ref10) {
-        var noun = _ref10.noun;
+        } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["c" /* Phrase */], { id: 'PP' }, function (_ref7) {
+        var noun = _ref7.noun;
         return noun && __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* Word */], { id: 'prep', getOptions: function getOptions() {
                 return prepositions;
-            } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["b" /* Phrase */], { id: 'NP' }, function (_ref11) {
-            var prep = _ref11.prep;
+            } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["c" /* Phrase */], { id: 'NP' }, function (_ref8) {
+            var prep = _ref8.prep;
             return prep && __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](NounPhrase, null);
         }));
     }));
 };
+var VerbPhrase = function VerbPhrase() {
+    return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* Word */], { id: 'tense', getOptions: function getOptions(_ref9) {
+            var noun = _ref9.noun;
+            return noun && tenses[noun.type];
+        } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["a" /* Word */], { id: 'verb', required: true, getOptions: function getOptions(_ref10) {
+            var noun = _ref10.noun,
+                tense = _ref10.tense;
+            return noun && tense && verbs[tense.id];
+        } }), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["c" /* Phrase */], { id: 'NP' }, function (_ref11) {
+        var verb = _ref11.verb;
+        return verb && __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](NounPhrase, null);
+    }));
+};
 
-var Example = function (_React$Component) {
-    _inherits(Example, _React$Component);
+var Poem = function (_React$Component) {
+    _inherits(Poem, _React$Component);
 
-    function Example() {
-        _classCallCheck(this, Example);
+    function Poem() {
+        _classCallCheck(this, Poem);
 
-        return _possibleConstructorReturn(this, (Example.__proto__ || Object.getPrototypeOf(Example)).apply(this, arguments));
+        return _possibleConstructorReturn(this, (Poem.__proto__ || Object.getPrototypeOf(Poem)).apply(this, arguments));
     }
 
-    _createClass(Example, [{
+    _createClass(Poem, [{
         key: 'render',
         value: function render() {
             return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("form", { style: {
                     textAlign: 'center'
-                } }, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("h1", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["d" /* Sentence */], { id: 'title', choices: choices }, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](NounPhrase, null), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](VerbPhrase, null))), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("p", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["d" /* Sentence */], { id: 'poem', choices: choices }, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["c" /* List */], { id: 'line' }, function (_ref12, idx) {
+                } }, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("h1", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["d" /* Sentence */], { id: 'title', choices: choices }, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](NounPhrase, null), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](VerbPhrase, null))), __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("p", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["d" /* Sentence */], { id: 'poem', choices: choices }, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["b" /* List */], { id: 'line' }, function (_ref12, idx) {
                 var line = _ref12.line;
-                return (idx === 0 || line[idx - 1] && line[idx - 1].noun) && __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["b" /* Phrase */], { key: idx, id: idx }, function (_ref13) {
+                return (idx === 0 || line[idx - 1] && line[idx - 1].noun) && __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](__WEBPACK_IMPORTED_MODULE_1__src_index__["c" /* Phrase */], { key: idx, id: idx }, function (_ref13) {
                     _objectDestructuringEmpty(_ref13);
 
                     return __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("span", null, __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](NounPhrase, null), " ", __WEBPACK_IMPORTED_MODULE_0_react__["createElement"](VerbPhrase, null), ",", __WEBPACK_IMPORTED_MODULE_0_react__["createElement"]("br", null));
@@ -10331,10 +10316,10 @@ var Example = function (_React$Component) {
         }
     }]);
 
-    return Example;
+    return Poem;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
-/* harmony default export */ __webpack_exports__["a"] = (Example);
+/* harmony default export */ __webpack_exports__["a"] = (Poem);
 function parse(a) {
     var b = {};
     for (var i = 0; i < a.length; ++i) {
@@ -10399,14 +10384,16 @@ if (false) {
 /* unused harmony export Input */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Word; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return Sentence; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return List; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Phrase; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return List; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return Phrase; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(107);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__style_css__ = __webpack_require__(197);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__style_css__);
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -10496,7 +10483,6 @@ var Input = function (_React$Component) {
             });
         },
         get: function get() {
-            console.log(this.context.selections);
             return this.context.selections[this.props.id] && this.context.selections[this.props.id].id;
         }
     }]);
@@ -10624,6 +10610,11 @@ var AbstractPhrase = function (_React$Component3) {
             this.context.setSelection(this.props.id, function () {
                 return _this6.getInitialSelections();
             });
+        }
+    }, {
+        key: 'shouldComponentUpdate',
+        value: function shouldComponentUpdate(nextProps, nextState, nextContext) {
+            return this.context !== nextContext || _get(AbstractPhrase.prototype.__proto__ || Object.getPrototypeOf(AbstractPhrase.prototype), 'shouldComponentUpdate', this).call(this, nextProps, nextState, this.context);
         }
     }]);
 

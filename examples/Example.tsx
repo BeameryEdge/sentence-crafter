@@ -97,33 +97,6 @@ const adjectives = [
     'early', 'young', 'important', 'few', 'public', 'bad', 'same', 'able'
 ].map(value => ({id:value || 'continue', value}) as Option)
 
-interface NounPhraseSelections {
-    [x: string]: Selection
-    det: Determiner
-    adj: Option[]
-    noun: Noun
-    prep: Option
-}
-// const nounPhraseConfig: SelectConfig<NounPhraseSelections>[] = [
-//     { id: 'det', required:true, getOptions:() => determiners },
-//     { id: 'adj', list: true, getOptions: ({ noun }) => noun && adjectives, },
-//     { id: 'noun', getOptions:({ det }) =>
-//         det && (
-//             det.id === 'a' ? nouns[det.type].filter(startsWithConsonant) :
-//             det.id === 'an' ? nouns[det.type].filter(startsWithVowel) :
-//             nouns[det.type]
-//         ) },
-//     { id: 'PP', getConfigs: ({ noun }) => noun && prepositionPhraseConfig },
-// ]
-interface PrepositionPhraseSelections extends NounPhraseSelections {
-    prep: Option
-}
-// const prepositionPhraseConfig: SelectConfig<PrepositionPhraseSelections>[] = [
-//     { id: 'prep', getOptions:() => prepositions },
-//     { id: 'det', required:true, getOptions:({ prep }) => prep && determiners },
-//     ...nounPhraseConfig.slice(1)
-// ]
-
 
 const verbs = [
     { present: 'being', future: 'be', past: 'been' },
@@ -184,44 +157,47 @@ const tenses = {
     ],
 }
 
-// interface VerbPhraseSelections extends NounPhraseSelections {
-//     tense: Option,
-//     verb: Option,
-// }
+interface NounPhraseSelections {
+    [x: string]: Selection
+    det: Determiner
+    adj: Option[]
+    noun: Noun
+    PP: {
+        prep: Option
+        NP: NounPhraseSelections
+    }
+}
 
-// interface PoemSelection extends SelectionsObject {
-//     line: {
-//         NP: NounPhraseSelections,
-//         VP: VerbPhraseSelections
-//     }
-// }
+const NounPhrase = () => <span>
+<Word id='det' getOptions={() => determiners} />
+<List id='adj'>{({noun, adj}: NounPhraseSelections, idx) =>
+    noun && <Word key={idx} id={idx} getOptions={() => adjectives}/>
+}</List>
+<Word id='noun' getOptions={({ det }: NounPhraseSelections) =>
+    det && (
+        det.id === 'a' ? nouns[det.type].filter(startsWithConsonant) :
+        det.id === 'an' ? nouns[det.type].filter(startsWithVowel) :
+        nouns[det.type]
+    ) }/>
+<Phrase id='PP'>{({ noun }: NounPhraseSelections) => noun &&
+    <span>
+        <Word id='prep' getOptions={() => prepositions}/>
+        <Phrase id='NP'>{({ prep }: NounPhraseSelections['PP']) => prep && <NounPhrase/>}</Phrase>
+    </span>
+}</Phrase>
+</span>
 
+interface VerbPhraseSelections extends NounPhraseSelections {
+    tense: Option,
+    verb: Option,
+}
 const VerbPhrase = () => <span>
     <Word id='tense' getOptions={({ noun }) => noun && tenses[noun.type] }/>
     <Word id='verb' required getOptions={({ noun, tense }) => noun && tense && verbs[tense.id]}/>
-    <Phrase id='NP'>{({ verb }) => verb && <NounPhrase/>}</Phrase>
+    <Phrase id='NP'>{({ verb }: VerbPhraseSelections) => verb && <NounPhrase/>}</Phrase>
 </span>
 
-const NounPhrase = () => <span>
-    <Word id='det' getOptions={() => determiners} />
-    <List id='adj'>{({noun, adj}: NounPhraseSelections, idx) =>
-        noun && <Word key={idx} id={idx} getOptions={() => adjectives}/>
-    }</List>
-    <Word id='noun' getOptions={({ det }: NounPhraseSelections) =>
-        det && (
-            det.id === 'a' ? nouns[det.type].filter(startsWithConsonant) :
-            det.id === 'an' ? nouns[det.type].filter(startsWithVowel) :
-            nouns[det.type]
-        ) }/>
-    <Phrase id='PP'>{({ noun }) => noun &&
-        <span>
-            <Word id='prep' getOptions={() => prepositions}/>
-            <Phrase id='NP'>{({ prep }) => prep && <NounPhrase/>}</Phrase>
-        </span>
-    }</Phrase>
-</span>
-
-class Example extends React.Component {
+class Poem extends React.Component {
     render() {
         return (
             <form style={{
@@ -258,7 +234,7 @@ class Example extends React.Component {
     }
 }
 
-export default Example;
+export default Poem;
 
 function parse(a: string[]) {
     var b = {};

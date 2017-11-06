@@ -197,7 +197,7 @@ export class Word<T extends Selections> extends React.Component<WordProps<T>, { 
     }
 }
 
-abstract class AbstractPhrase<T extends Selections, U extends Selections, P extends SelectionProps<T>, S=never> extends React.Component<P, S> {
+abstract class AbstractPhrase<T extends Selections, U extends Selections, P extends SelectionProps<T>=SelectionProps<T>, S=never> extends React.Component<P, S> {
     static contextTypes = phraseContextTypes
     context: PhraseContext<T>
     static childContextTypes = phraseContextTypes
@@ -228,6 +228,9 @@ abstract class AbstractPhrase<T extends Selections, U extends Selections, P exte
     }
     componentWillMount(){
         this.context.setSelection(this.props.id, () => this.getInitialSelections())
+    }
+    shouldComponentUpdate(nextProps, nextState, nextContext){
+        return this.context !== nextContext || super.shouldComponentUpdate(nextProps, nextState, this.context)
     }
     abstract getInitialSelections(): U
     abstract updateSelections(id: number | string, f:(prevSelections: Selection)=>Selection, prevSelection: U): U
@@ -319,7 +322,7 @@ export class List<T extends Selections> extends AbstractPhrase<T, SelectionList,
 export interface PhraseProps<T extends Selections> extends SelectionProps<T> {
     children: (selections: T) => React.ReactNode
 }
-export class Phrase<T extends Selections, S extends SelectionsObject> extends AbstractPhrase<T, SelectionsObject, PhraseProps<T>>{
+export class Phrase<T extends Selections=Selections, S extends SelectionsObject=SelectionsObject> extends AbstractPhrase<T, SelectionsObject, PhraseProps<T>>{
     getInitialSelections(){
         return {}
     }

@@ -163,6 +163,20 @@ const intervals = [
     { id: 'milliseconds', value: 'Millisecond' },
 ]
 
+interface ReportSelections extends SelectionsObject {
+    chart: Chart
+    table: Table
+    group: {
+        dateInterval: Option
+        fieldId: Field
+        subFieldId: Field
+    }
+    split: {
+        fieldId: Field
+        subFieldId: Field
+    }
+}
+
 const ReportSelector: React.StatelessComponent<{ charts: Chart[], choices: {[x:string]: string } }> = ({ charts, choices }) => (
     <Sentence id='report' choices={choices}>
         <Word id='chart' required getOptions={() => charts } />
@@ -172,7 +186,7 @@ const ReportSelector: React.StatelessComponent<{ charts: Chart[], choices: {[x:s
             table && [{id:'where', value: 'where'}] }/>
         <Alternatives />
         <span key='grouped by'>grouped by</span>
-        <Phrase id='group' >{({ table }) => table && <span>
+        <Phrase id='group' >{({ table }: { table: Table }) => table && <span>
             <Word id='dateInterval' required getOptions={({ fieldId, subFieldId }) =>
                 getQueryField({ fieldId, subFieldId }) instanceof DateField && intervals }/>
             <Word id='fieldId' required getOptions={() => table.fields }/>
@@ -181,7 +195,7 @@ const ReportSelector: React.StatelessComponent<{ charts: Chart[], choices: {[x:s
         </span>}</Phrase>
         <Word id='doSplit' placeholder='(+split)' getOptions={({ table, group }) =>
             group && table && [{id:'split by', value: 'split by'}] }/>
-        <Phrase id='split' >{({ table, group, doSplit }) =>
+        <Phrase id='split' >{({ table, group, doSplit }: ReportSelections) =>
             table && doSplit && group && <span>
             <Word id='fieldId' required getOptions={() =>
                 table.fields.filter(field =>
