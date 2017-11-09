@@ -10392,8 +10392,6 @@ if (false) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__style_css__ = __webpack_require__(197);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__style_css__);
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -10459,6 +10457,15 @@ var Input = function (_React$Component) {
     }
 
     _createClass(Input, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var id = this.props.id;
+
+            var preSelectedChoice = this.context.choices[this.getKey()];
+            var weMadeSelection = this.context.selections.hasOwnProperty(id);
+            this.value = !weMadeSelection && preSelectedChoice;
+        }
+    }, {
         key: 'getKey',
         value: function getKey() {
             var parentId = this.context.parentId;
@@ -10474,9 +10481,6 @@ var Input = function (_React$Component) {
                 selectOption = _context.selectOption,
                 setSelection = _context.setSelection;
 
-            var preSelectedChoice = this.context.choices[this.getKey()];
-            var weMadeSelection = this.context.selections.hasOwnProperty(id);
-            value = !weMadeSelection && preSelectedChoice ? preSelectedChoice : value;
             var selection = { id: value };
             this.context.selectOption(this.props.id, selection) && this.context.setSelection(this.props.id, function () {
                 return selection;
@@ -10610,11 +10614,6 @@ var AbstractPhrase = function (_React$Component3) {
             this.context.setSelection(this.props.id, function () {
                 return _this6.getInitialSelections();
             });
-        }
-    }, {
-        key: 'shouldComponentUpdate',
-        value: function shouldComponentUpdate(nextProps, nextState, nextContext) {
-            return this.context !== nextContext || _get(AbstractPhrase.prototype.__proto__ || Object.getPrototypeOf(AbstractPhrase.prototype), 'shouldComponentUpdate', this).call(this, nextProps, nextState, this.context);
         }
     }]);
 

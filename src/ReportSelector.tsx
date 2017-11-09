@@ -5,6 +5,7 @@ class DynamicInput extends Input<{}, { id: string, type?: string }> {
     hiddenSpan: HTMLSpanElement
     resize = (input: HTMLInputElement) => {
         if (!input || !this.hiddenSpan || this.props.type === 'date') return
+        this.value = input.value
         this.hiddenSpan.innerText = input.value ? input.value+'.' : input.placeholder;
         const {width, height} = this.hiddenSpan.getBoundingClientRect()
         input.style.width = (width) + 'px'
@@ -21,13 +22,13 @@ class DynamicInput extends Input<{}, { id: string, type?: string }> {
                 <input
                 className='sentence-crafter-input'
                 placeholder='<blank>'
-                type={this.props.type}
+                type={this.props.type || 'text'}
                 key={key}
                 name={key}
                 id={key}
                 ref={$=>this.resize($)}
                 onChange={e=>this.resize(e.target)}
-                value={this.value}/>
+                value={this.value || ''}/>
             </span>
         )
     }

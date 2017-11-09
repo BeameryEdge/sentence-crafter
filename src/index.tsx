@@ -104,6 +104,12 @@ export const phraseContextTypes = {
 
 export abstract class Input<T extends Selections=Selections, P extends SelectionProps<T>=SelectionProps<T>, S={}> extends React.Component<P, S> {
     context: PhraseContext<T>
+    componentDidMount(){
+        const {id} = this.props
+        const preSelectedChoice = this.context.choices[this.getKey()]
+        const weMadeSelection = this.context.selections.hasOwnProperty(id)
+        this.value = !weMadeSelection && preSelectedChoice
+    }
     static contextTypes = phraseContextTypes
     props: P & { children?: React.ReactNode  }
     getKey(){
@@ -114,9 +120,6 @@ export abstract class Input<T extends Selections=Selections, P extends Selection
     set value(value: string){
         const {id} = this.props
         const {selectOption, setSelection} = this.context
-        const preSelectedChoice = this.context.choices[this.getKey()]
-        const weMadeSelection = this.context.selections.hasOwnProperty(id)
-        value = (!weMadeSelection && preSelectedChoice) ? preSelectedChoice : value
 
         const selection = { id: value } as Option
         this.context.selectOption(this.props.id, selection) &&
@@ -229,9 +232,9 @@ abstract class AbstractPhrase<T extends Selections, U extends Selections, P exte
     componentWillMount(){
         this.context.setSelection(this.props.id, () => this.getInitialSelections())
     }
-    shouldComponentUpdate(nextProps, nextState, nextContext){
-        return this.context !== nextContext || super.shouldComponentUpdate(nextProps, nextState, this.context)
-    }
+    // shouldComponentUpdate(nextProps, nextState, nextContext){
+    //     return this.context !== nextContext || super.shouldComponentUpdate(nextProps, nextState, this.context)
+    // }
     abstract getInitialSelections(): U
     abstract updateSelections(id: number | string, f:(prevSelections: Selection)=>Selection, prevSelection: U): U
 }
