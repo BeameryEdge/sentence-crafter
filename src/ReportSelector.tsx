@@ -91,7 +91,7 @@ export class NestedField extends Field {
 
 interface QuerySelections extends SelectionsObject {
     fieldId?: Field
-    subFieldId?: Field
+    subFieldProp?: Field
     op?: Option
     cont?: Option
 }
@@ -111,7 +111,7 @@ const Query = ({ table }) => {
                         !query.slice(0, idx).find(({ fieldId }) =>
                             fieldId && fieldId.id === id)) :
                             table.fields }/>
-            <Word id='subFieldId' required getOptions={({ fieldId }) =>
+            <Word id='subFieldProp' required getOptions={({ fieldId }) =>
                 fieldId instanceof NestedField && fieldId.subFields }/>
             <Word id='op' required getOptions={({ fieldId }: { fieldId: Field}) =>
                 fieldId && fieldId.conditions } />
@@ -143,13 +143,13 @@ export interface Chart extends Option {
     tables: Table[],
 }
 
-const getQueryField = ({ fieldId, subFieldId }: {
+const getQueryField = ({ fieldId, subFieldProp }: {
     fieldId?: Field
-    subFieldId?: Field
+    subFieldProp?: Field
 }) => (
     fieldId && (
         fieldId instanceof NestedField ?
-            subFieldId :
+            subFieldProp :
             fieldId
     )
 )
@@ -170,11 +170,11 @@ interface ReportSelections extends SelectionsObject {
     group: {
         dateInterval: Option
         fieldId: Field
-        subFieldId: Field
+        subFieldProp: Field
     }
     split: {
         fieldId: Field
-        subFieldId: Field
+        subFieldProp: Field
     }
 }
 
@@ -188,10 +188,10 @@ const ReportSelector: React.StatelessComponent<{ charts: Chart[], choices: {[x:s
         <Alternatives />
         <span key='grouped by'>grouped by</span>
         <Phrase id='group' >{({ table }: { table: Table }) => table && <span>
-            <Word id='dateInterval' required getOptions={({ fieldId, subFieldId }) =>
-                getQueryField({ fieldId, subFieldId }) instanceof DateField && intervals }/>
+            <Word id='dateInterval' required getOptions={({ fieldId, subFieldProp }) =>
+                getQueryField({ fieldId, subFieldProp }) instanceof DateField && intervals }/>
             <Word id='fieldId' required getOptions={() => table.fields }/>
-            <Word id='subFieldId' required getOptions={({ fieldId }) =>
+            <Word id='subFieldProp' required getOptions={({ fieldId }) =>
                 fieldId instanceof NestedField && fieldId.subFields }/>
         </span>}</Phrase>
         <Word id='doSplit' placeholder='(+split)' getOptions={({ table, group }) =>
@@ -202,7 +202,7 @@ const ReportSelector: React.StatelessComponent<{ charts: Chart[], choices: {[x:s
                 table.fields.filter(field =>
                     field.id !== group.fieldId.id &&
                     !(field instanceof DateField)) }/>
-            <Word id='subFieldId' required getOptions={({ fieldId }) =>
+            <Word id='subFieldProp' required getOptions={({ fieldId }) =>
                 fieldId instanceof NestedField &&
                 fieldId.subFields }/>
         </span>}</Phrase>
