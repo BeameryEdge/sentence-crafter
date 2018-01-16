@@ -1,11 +1,12 @@
 import * as React from 'react';
-import ReportSelector, { Table, Field, MultiChoiceField, DateField, BooleanField, NestedField } from '../src/ReportSelector'
+import ReportSelector, { Table, Field, MultiChoiceField, NumberField, DateField, BooleanField, NestedField } from '../src/ReportSelector'
 
 const companyList = [new Field('c1', 'Company 1')]
 const companyIdField = new MultiChoiceField('companyId', 'Company', companyList)
 
 const users = new Table('users', 'Users', [
     companyIdField,
+    new NumberField('friends', 'Number of Friends'),
     new DateField('createdAt', 'Created'),
     new DateField('updatedAt', 'Updated'),
     new BooleanField('credentials.verified', 'Whether Verified'),

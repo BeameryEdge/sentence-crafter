@@ -42,7 +42,7 @@ class DateInput extends Input<{}, { id: string, type?: string }> {
         const key = this.getKey()
         return (
             <input
-            className='sentence-crafter-input'
+            className='sentence-crafter-input sentence-crafter-date-input'
             placeholder='<blank>'
             type='date'
             key={key}
@@ -63,6 +63,15 @@ export class Field implements Option {
     constructor(public id: string, public value: string){}
     Query(){
         return <DynamicInput key='value' id='value'/>
+    }
+}
+export class NumberField extends Field {
+    conditions = [
+        {id: 'gt', value: 'greater than'},
+        {id: 'lt', value: 'less than'},
+    ]
+    Query(){
+        return <DynamicInput key='value' id='value' type='number'/>
     }
 }
 export class DateField extends Field {
@@ -155,6 +164,13 @@ const getQueryField = ({ fieldId, subFieldProp }: {
 )
 
 const intervals = [
+    { id: '1', value: 'Precise' },
+    { id: '10', value: 'Intervals of 10' },
+    { id: '100', value: 'Intervals of 100' },
+    { id: '1000', value: 'Intervals of 1000' },
+]
+
+const dateIntervals = [
     { id: 'year', value: 'Year' },
     { id: 'month', value: 'Month' },
     { id: 'day', value: 'Day' },
@@ -189,7 +205,9 @@ const ReportSelector: React.StatelessComponent<{ charts: Chart[], choices: {[x:s
         <span key='grouped by'>grouped by</span>
         <Phrase id='group' >{({ table }: { table: Table }) => table && <span>
             <Word id='dateInterval' required getOptions={({ fieldId, subFieldProp }) =>
-                getQueryField({ fieldId, subFieldProp }) instanceof DateField && intervals }/>
+                getQueryField({ fieldId, subFieldProp }) instanceof DateField && dateIntervals }/>
+            <Word id='interval' required getOptions={({ fieldId, subFieldProp }) =>
+                getQueryField({ fieldId, subFieldProp }) instanceof NumberField && intervals }/>
             <Word id='fieldId' required getOptions={() => table.fields }/>
             <Word id='subFieldProp' required getOptions={({ fieldId }) =>
                 fieldId instanceof NestedField && fieldId.subFields }/>
