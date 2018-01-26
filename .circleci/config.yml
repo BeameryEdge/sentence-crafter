@@ -77,7 +77,7 @@ workflows:
               only: /^v[0-9]+(\.[0-9]+)*$/
       - test:
           requires:
-            - install
+            - build
           filters:
             tags:
               only: /^v[0-9]+(\.[0-9]+)*$/
