@@ -30,13 +30,10 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: Test
-          command: npm test
+          command: npm run ci
           environment:
-            MOCHA_FILE: $CIRCLE_TEST_REPORTS/junit/test-results.xml
-            DEBUG: querycraft*
-      - run:
-          name: Generate code coverage
-          command: './node_modules/.bin/nyc report --reporter=text-lcov'
+            JEST_JUNIT_OUTPUT: $CIRCLE_TEST_REPORTS/junit/test-results.xml
+            DEBUG: sentence-crafter*
       - store_artifacts:
           path: $CIRCLE_TEST_REPORTS/junit
           prefix: tests
@@ -62,7 +59,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Build dist
-          command: npm run build
+          command: npm run release
       - run:
           name: Publish to NPM
           command: npm publish
