@@ -1,7 +1,7 @@
 {
   "name": "sentence-crafter",
   "library": "SentenceCrafter",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "scripts": {
     "build": "webpack --config webpack.config.babel.js",
     "release": "webpack --p --config webpack.config.babel.js",
