@@ -203,6 +203,9 @@ class Poem extends React.Component {
             <form style={{
                 textAlign: 'center'
             }}>
+                <h4>
+                    Make a poem with only the most common words in the english language
+                </h4>
                 <h1>
                     <Sentence id='title' choices={choices}>
                         <NounPhrase />
@@ -220,15 +223,6 @@ class Poem extends React.Component {
                     </Sentence>
                     <input type="submit" value="Save"/>
                 </p>
-                <footer style={{
-                    width: '100%',
-                    height: '33%',
-                    textAlign: 'center',
-                    position: 'fixed',
-                    bottom: 0,
-                }}>
-                    Make a poem with only the most common words in the english language
-                </footer>
             </form>
         )
     }

@@ -263,9 +263,9 @@ export class Sentence<T extends SelectionsObject> extends React.Component<Senten
         return {
             parentId: this.props.id as string,
             setSelection: (id: number | string, f:(prevSelection: Selection)=>Selection) => {
-                this.setState(({ selections }: SentenceState<T>) => ({
+                this.setState(({ selections }) => ({
                     selections: {...(selections as Object), [id]: f(selections[id]) }
-                }))
+                }) as SentenceState<T>)
             },
             selectOption: (id: string | number, selection: Option) => {
                 const key = this.props.id+'.'+id

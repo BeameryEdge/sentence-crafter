@@ -126,7 +126,7 @@ const Query = ({ table }) => {
                 fieldId && fieldId.conditions } />
             {query[idx].fieldId && query[idx].fieldId.Query()}
             <Word id='cont' placeholder='(+and)' getOptions={({ op }) =>
-                op && query.length < (table.fields.length-1) && [{id:'and', value: ', and'}] }/>
+                op && idx < (table.fields.length-1) && [{id:'and', value: ', and'}] }/>
         </span>}</Phrase>
     }</List>
 }
